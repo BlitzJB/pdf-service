@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: PDF Generation Service
+  description: Service for generating PDFs from HTML content with optimized performance
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3002
+    description: Local development server
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /metrics:
+    get:
+      summary: Prometheus metrics endpoint
+      responses:
+        '200':
+          description: Current metrics in Prometheus format
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /generate-pdf:
+    post:
+      summary: Generate PDF from HTML content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - html
+              properties:
+                html:
+                  type: string
+                  description: HTML content to convert to PDF
+                options:
+                  type: object
+                  properties:
+                    format:
+                      type: string
+                      enum: [A4]
+                      default: A4
+                      description: Paper format
+                    landscape:
+                      type: boolean
+                      default: false
+                      description: Landscape or portrait orientation
+                    width:
+                      type: integer
+                      description: Viewport width in pixels
+                      default: 1200
+                    height:
+                      type: integer
+                      description: Viewport height in pixels
+                      default: 800
+      responses:
+        '200':
+          description: PDF generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string 

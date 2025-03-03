@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Service Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --nav-height: 60px;
+            --primary-dark: #1a5fb4;
+            --primary-light: #3584e4;
+            --code-bg: #282c34;
+            --sidebar-width: 240px;
+        }
+        
+        body {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-height);
+        }
+
+        body > nav {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            height: var(--nav-height);
+            background: var(--background-color);
+            border-bottom: 1px solid var(--muted-border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: calc(var(--nav-height) + 2rem);
+            height: calc(100vh - var(--nav-height) - 4rem);
+            overflow-y: auto;
+            padding-right: 1rem;
+            border-right: 1px solid var(--muted-border-color);
+        }
+
+        .content {
+            min-width: 0;
+            max-width: 900px;
+        }
+
+        .container-fluid {
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            position: relative;
+            color: var(--muted-color);
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-light);
+            transform: scaleX(0);
+            transition: transform 0.2s;
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .example-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--muted-border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .example-tabs button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--muted-color);
+            transition: all 0.2s;
+        }
+
+        .example-tabs button:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .example-tabs button.active {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .code-example {
+            display: none;
+            position: relative;
+        }
+
+        .code-example.active {
+            display: block;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--primary-dark);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-button:hover {
+            background: var(--primary-light);
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .endpoint-url {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--code-bg);
+            border-radius: 4px;
+            font-family: monospace;
+            margin-left: 0.5rem;
+        }
+
+        .parameter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .parameter-table th,
+        .parameter-table td {
+            padding: 0.75rem;
+            border: 1px solid var(--muted-border-color);
+        }
+
+        .parameter-table th {
+            background: var(--card-background-color);
+        }
+
+        .status-code {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status-code.success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .status-code.error {
+            background: #e74c3c;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container-fluid">
+            <ul>
+                <li>
+                    <a href="#" class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        PDF Service
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <aside class="sidebar">
+            <nav>
+                <details open>
+                    <summary>Getting Started</summary>
+                    <ul>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#configuration">Configuration</a></li>
+                    </ul>
+                </details>
+                <details open>
+                    <summary>API Reference</summary>
+                    <ul>
+                        <li><a href="#generate-pdf">Generate PDF</a></li>
+                        <li><a href="#health-check">Health Check</a></li>
+                        <li><a href="#metrics">Metrics</a></li>
+                    </ul>
+                </details>
+                <details open>
+                    <summary>Examples</summary>
+                    <ul>
+                        <li><a href="#curl-example">cURL</a></li>
+                        <li><a href="#python-example">Python</a></li>
+                        <li><a href="#node-example">Node.js</a></li>
+                    </ul>
+                </details>
+            </nav>
+        </aside>
+
+        <div class="content">
+            <section id="getting-started">
+                <h1>PDF Service Documentation</h1>
+                <p>A high-performance, containerized service for generating PDFs from HTML content with support for templates, custom styling, and various output options. Built with Express.js and Puppeteer.</p>
+
+                <h2 id="installation">Installation</h2>
+                <p>The service is available as a Docker image for easy deployment:</p>
+                <pre><code class="language-bash">docker pull blitzjb/pdf-service:latest</code></pre>
+
+                <h2 id="quick-start">Quick Start</h2>
+                <p>Run the PDF service using Docker:</p>
+                <pre><code class="language-bash">docker run -p 3002:3000 blitzjb/pdf-service:latest</code></pre>
+
+                <p>Or using Docker Compose:</p>
+                <pre><code class="language-yaml">services:
+  pdf-service:
+    image: blitzjb/pdf-service:latest
+    ports:
+      - "3002:3000"
+    environment:
+      - PORT=3000</code></pre>
+
+                <h2 id="configuration">Default Configuration</h2>
+                <div class="parameter-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Default Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>format</td>
+                                <td>A4</td>
+                                <td>Page format</td>
+                            </tr>
+                            <tr>
+                                <td>landscape</td>
+                                <td>false</td>
+                                <td>Page orientation</td>
+                            </tr>
+                            <tr>
+                                <td>printBackground</td>
+                                <td>true</td>
+                                <td>Include background graphics</td>
+                            </tr>
+                            <tr>
+                                <td>margin</td>
+                                <td>0px</td>
+                                <td>Page margins (all sides)</td>
+                            </tr>
+                            <tr>
+                                <td>viewport</td>
+                                <td>1200x800</td>
+                                <td>Default viewport size</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="api-reference">
+                <h2>API Reference</h2>
+
+                <h3 id="generate-pdf">Generate PDF</h3>
+                <p>Convert HTML content to PDF with customizable options.</p>
+
+                <div class="endpoint">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-url">/generate-pdf</span>
+                </div>
+
+                <h4>Request Body</h4>
+                <pre><code class="language-json">{
+  "html": "HTML content or template string",
+  "options": {
+    "format": "A4",
+    "margin": "1cm",
+    "landscape": false,
+    "scale": 1.0,
+    "printBackground": true
+  }
+}</code></pre>
+
+                <h4>Response</h4>
+                <ul>
+                    <li><strong>Content-Type:</strong> application/pdf</li>
+                    <li><strong>Body:</strong> PDF file content</li>
+                </ul>
+
+                <h4>Error Responses</h4>
+                <pre><code class="language-json">{
+  "error": "HTML content is required"
+}</code></pre>
+                <span class="status-code error">400 Bad Request</span>
+
+                <pre><code class="language-json">{
+  "error": "Failed to generate PDF"
+}</code></pre>
+                <span class="status-code error">500 Internal Server Error</span>
+            </section>
+
+            <section id="examples">
+                <h2>Usage Examples</h2>
+
+                <div class="example-tabs">
+                    <button class="active" onclick="showExample('curl')">cURL</button>
+                    <button onclick="showExample('python')">Python</button>
+                    <button onclick="showExample('node')">Node.js</button>
+                </div>
+
+                <div id="curl-example" class="code-example active">
+                    <pre><code class="language-bash">curl -X POST \
+  http://localhost:3002/generate-pdf \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "html": "<h1>Hello World</h1><p>This is a test PDF.</p>",
+    "options": {
+      "format": "A4",
+      "margin": "1cm"
+    }
+  }' \
+  --output output.pdf</code></pre>
+                </div>
+
+                <div id="python-example" class="code-example">
+                    <pre><code class="language-python">import requests
+
+def generate_pdf(content, options=None):
+    response = requests.post(
+        "http://localhost:3002/generate-pdf",
+        json={
+            "html": content,
+            "options": options or {}
+        }
+    )
+    response.raise_for_status()
+    return response.content
+
+# Example usage
+content = """
+<h1>Hello World</h1>
+<p>This is a test PDF.</p>
+"""
+
+options = {
+    "format": "A4",
+    "margin": "1cm"
+}
+
+pdf_content = generate_pdf(content, options)
+with open("output.pdf", "wb") as f:
+    f.write(pdf_content)</code></pre>
+                </div>
+
+                <div id="node-example" class="code-example">
+                    <pre><code class="language-javascript">const fetch = require('node-fetch');
+const fs = require('fs').promises;
+
+async function generatePDF(content, options = {}) {
+  const response = await fetch('http://localhost:3002/generate-pdf', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      html: content,
+      options,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`PDF generation failed: ${response.statusText}`);
+  }
+
+  return response.buffer();
+}
+
+// Example usage
+async function main() {
+  const content = `
+    <h1>Hello World</h1>
+    <p>This is a test PDF.</p>
+  `;
+
+  const options = {
+    format: 'A4',
+    margin: '1cm',
+  };
+
+  try {
+    const pdfContent = await generatePDF(content, options);
+    await fs.writeFile('output.pdf', pdfContent);
+    console.log('PDF generated successfully!');
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+main();</code></pre>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script>
+        function showExample(language) {
+            document.querySelectorAll('.example-tabs button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`button[onclick="showExample('${language}')"]`).classList.add('active');
+
+            document.querySelectorAll('.code-example').forEach(example => {
+                example.classList.remove('active');
+            });
+            document.getElementById(`${language}-example`).classList.add('active');
+        }
+
+        // Highlight all code blocks on load
+        Prism.highlightAll();
+    </script>
+</body>
+</html> 
