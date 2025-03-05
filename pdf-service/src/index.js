@@ -37,7 +37,7 @@ const metricsMiddleware = promBundle({
     config: {
       prefix: 'pdf_service_'
     }
-  }
+  },
 });
 
 app.use(metricsMiddleware);
@@ -99,7 +99,10 @@ process.on('SIGTERM', cleanup);
 process.on('SIGINT', cleanup);
 
 // Middleware
-app.use(express.json({limit: '0'})); 
+app.use(express.json({limit: '10mb'})); 
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.text({ limit: '10mb' }));
+app.use(express.raw({ limit: '10mb' }));
 
 // Setup Swagger
 const swaggerDocument = YAML.parse(
