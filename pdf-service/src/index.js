@@ -99,7 +99,7 @@ process.on('SIGTERM', cleanup);
 process.on('SIGINT', cleanup);
 
 // Middleware
-app.use(express.json());
+app.use(express.json({limit: '0'})); 
 
 // Setup Swagger
 const swaggerDocument = YAML.parse(
